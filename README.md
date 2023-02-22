@@ -14,12 +14,18 @@ There are several reasons why you might choose to use server-side analytics over
 ## Tech Stack
 
 The main stack is AWS Serverless Services, created with AWS CDK.
+[<img src="./cdk/diagram.png" width="250"/>](image.png)
+
 The Web interface is created in Angular
 
  - ##### TODO: More info once services created
 
 
 ## 🛠️ Quickstart
+#### Prerequisites
+Node
+Dot 
+CDK 
 - ##### TODO: ADD Quickstart when created
 
 
