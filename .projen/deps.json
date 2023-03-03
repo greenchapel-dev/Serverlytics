@@ -1,6 +1,10 @@
 {
   "dependencies": [
     {
+      "name": "@types/aws-lambda",
+      "type": "build"
+    },
+    {
       "name": "@types/jest",
       "type": "build"
     },
@@ -81,8 +85,28 @@
       "type": "runtime"
     },
     {
+      "name": "aws-lambda",
+      "type": "runtime"
+    },
+    {
+      "name": "aws-sdk",
+      "type": "runtime"
+    },
+    {
+      "name": "cdk-api-gateway-helper-lib",
+      "type": "runtime"
+    },
+    {
+      "name": "cdk-custom-domain-lib",
+      "type": "runtime"
+    },
+    {
       "name": "constructs",
       "version": "^10.0.5",
+      "type": "runtime"
+    },
+    {
+      "name": "dotenv",
       "type": "runtime"
     }
   ],

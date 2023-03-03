@@ -13,6 +13,8 @@ There are several reasons why you might choose to use server-side analytics over
 
 ## Tech Stack
 
+This Project Uses Projen as a Project framework
+
 The main stack is AWS Serverless Services, created with AWS CDK.
 [<img src="./cdk/diagram.png" width="250"/>](image.png)
 
@@ -23,9 +25,9 @@ The Web interface is created in Angular
 
 ## 🛠️ Quickstart
 #### Prerequisites
-Node
-Dot 
-CDK 
+- Node
+- Dot 
+- CDK 
 - ##### TODO: ADD Quickstart when created
 
 
@@ -34,7 +36,7 @@ See [CONTRIBUTING](CONTRIBUTING.md) for more information.
 
 ## License
 
-This library is licensed under the GPL 3 License. See the LICENSE file.
+This library is licensed under the Apache license. See the [LICENSE](LICENSE) file.
 
 ## Acknowledgments
 This platform was built using various AWS services and open-source libraries. We would like to thank the developers of these services and libraries for their contributions.
