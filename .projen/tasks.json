@@ -93,6 +93,15 @@
         }
       ]
     },
+    "dia": {
+      "name": "dia",
+      "description": "create a new diagram",
+      "steps": [
+        {
+          "exec": "npx cdk-dia"
+        }
+      ]
+    },
     "diff": {
       "name": "diff",
       "description": "Diffs the currently deployed app against your code",
@@ -133,6 +142,9 @@
       "steps": [
         {
           "spawn": "synth:silent"
+        },
+        {
+          "spawn": "dia"
         }
       ]
     },

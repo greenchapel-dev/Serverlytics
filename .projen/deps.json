@@ -29,6 +29,10 @@
       "type": "build"
     },
     {
+      "name": "cdk-dia",
+      "type": "build"
+    },
+    {
       "name": "esbuild",
       "type": "build"
     },
