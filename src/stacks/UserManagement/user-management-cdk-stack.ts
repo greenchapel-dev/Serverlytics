@@ -36,7 +36,7 @@ export class UserManagementCdkStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_14_X,
       entry: 'src/stacks/UserManagement/lambda/signUp.ts',
       handler: 'main',
-      timeout: Duration.seconds(6),
+      timeout: Duration.seconds(10),
       bundling: {
         externalModules: [
         ],
@@ -69,7 +69,7 @@ export class UserManagementCdkStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_14_X,
       entry: 'src/stacks/UserManagement/lambda/confirmSignUp.ts',
       handler: 'main',
-      timeout: Duration.seconds(6),
+      timeout: Duration.seconds(10),
       bundling: {
         externalModules: [
         ],
@@ -102,7 +102,7 @@ export class UserManagementCdkStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_14_X,
       entry: 'src/stacks/UserManagement/lambda/deleteUser.ts',
       handler: 'main',
-      timeout: Duration.seconds(6),
+      timeout: Duration.seconds(10),
       bundling: {
         externalModules: [
         ],
@@ -138,7 +138,7 @@ export class UserManagementCdkStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_14_X,
       entry: 'src/stacks/UserManagement/lambda/getUser.ts',
       handler: 'main',
-      timeout: Duration.seconds(6),
+      timeout: Duration.seconds(10),
       bundling: {
         externalModules: [
         ],
@@ -174,7 +174,7 @@ export class UserManagementCdkStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_14_X,
       entry: 'src/stacks/UserManagement/lambda/forgotPassword.ts',
       handler: 'main',
-      timeout: Duration.seconds(6),
+      timeout: Duration.seconds(10),
       bundling: {
         externalModules: [
         ],
@@ -208,7 +208,7 @@ export class UserManagementCdkStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_14_X,
       entry: 'src/stacks/UserManagement/lambda/forgotPasswordConfirm.ts',
       handler: 'main',
-      timeout: Duration.seconds(6),
+      timeout: Duration.seconds(10),
       bundling: {
         externalModules: [
         ],
@@ -242,7 +242,7 @@ export class UserManagementCdkStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_14_X,
       entry: 'src/stacks/UserManagement/lambda/changePassword.ts',
       handler: 'main',
-      timeout: Duration.seconds(6),
+      timeout: Duration.seconds(10),
       bundling: {
         externalModules: [
         ],

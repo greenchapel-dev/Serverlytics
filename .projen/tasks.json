@@ -83,6 +83,14 @@
         }
       ]
     },
+    "deploy-all": {
+      "name": "deploy-all",
+      "steps": [
+        {
+          "exec": "cdk deploy --all"
+        }
+      ]
+    },
     "destroy": {
       "name": "destroy",
       "description": "Destroys your cdk app in the AWS cloud",

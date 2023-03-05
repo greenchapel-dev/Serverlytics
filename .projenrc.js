@@ -34,6 +34,11 @@ const addDia = project.addTask('dia', {
 });
 project.projectBuild.postCompileTask.spawn(addDia);
 
+// add a new task to deploy all stacks
+project.addTask('deploy-all', {
+  exec: 'cdk deploy --all',
+});
+
 //synthesize the project
 project.synth();
 
