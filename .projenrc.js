@@ -23,12 +23,17 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   ], /* Exclude from git. */
 });
 
+// add .env and diagram.dot to package ignore
+project.addPackageIgnore('.env');
+project.addPackageIgnore('diagram.dot');
+
+// add a new task to create a new stack diagram
 const addDia = project.addTask('dia', {
   description: 'create a new diagram',
   exec: 'npx cdk-dia',
 });
-
 project.projectBuild.postCompileTask.spawn(addDia);
 
+//synthesize the project
 project.synth();
 
