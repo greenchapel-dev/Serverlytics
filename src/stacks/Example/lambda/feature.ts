@@ -13,29 +13,33 @@ export async function main( event: any, _context: Context, callback: Callback ) 
   // Set the region
   AWS.config.update({ region: process.env.region });
 
+  // get the action name needed when created
   const action = process.env.action!;
 
 
-  var paramsPW: GetUserRequest = {
+  // create the params for Get User
+  var getUserParams: GetUserRequest = {
     AccessToken: event.headers.Authorization,
   };
-  console.log('paramsPW', JSON.stringify(paramsPW));
   var cognitoidentityserviceprovider = new CognitoIdentityServiceProvider();
 
   try {
 
     // get User First
-    const getUser = await cognitoidentityserviceprovider.getUser(paramsPW).promise();
-    console.log('getUser.UserAttributes', getUser.UserAttributes);
+    const getUser = await cognitoidentityserviceprovider.getUser(getUserParams).promise();
+    // console.log('getUser.UserAttributes', getUser.UserAttributes);
 
     // find user actions
     let actions = getUser.UserAttributes.find((o: any) => o.Name === 'custom:userActions')?.Value;
     if (actions === undefined) {
+      // if no actions, set to empty array
       actions = '[]';
     }
+    // parse the actions into json string array
     const userActions: string[] = JSON.parse(actions);
-    console.log('userActions', userActions);
+    // console.log('userActions', userActions);
 
+    // if the action matches the action set for this api, return 200
     if (userActions.includes(action)) {
       return {
         statusCode: 200,
@@ -46,6 +50,7 @@ export async function main( event: any, _context: Context, callback: Callback ) 
         body: `run ${action}`,
       };
     } else {
+      // return forbidden 403
       return {
         statusCode: 403,
         headers: {
@@ -54,6 +59,7 @@ export async function main( event: any, _context: Context, callback: Callback ) 
       };
     }
   } catch (err) {
+    // if error, return 400
     const error: any = err;
     console.log('error', error);
     return {

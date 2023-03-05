@@ -22,9 +22,9 @@ export class TokenStack extends cdk.Stack {
     super(scope, id, props);
 
 
-    const domainNamePart = 'auth';
+    const domainNamePart = 'auth'; // domain name part is a subdomain of the domain name eg. auth.serverlytics.dev
 
-    const gatewayHelper = new ApiGatewayHelper(this, 'AUTH-Endpoint');
+    const gatewayHelper = new ApiGatewayHelper(this, 'AUTH-Endpoint'); // create the gateway helper
 
     /// GetToken ///
     // Create Lambda
@@ -96,13 +96,14 @@ export class TokenStack extends cdk.Stack {
 
 
     const cognitoPoolARN = `arn:aws:cognito-idp:${Stack.of(this).region}:${Stack.of(this).account}:userpool/${props?.userPoolId!}`;
-    // 👇 create a policy statement
+    // create a policy statement
     const initAuthPolicy = new iam.PolicyStatement({
       actions: ['cognito-idp:InitiateAuth'],
       resources: [cognitoPoolARN],
     });
 
 
+    // attach the policy to the lambdas
     getTokenFn.role?.attachInlinePolicy(new iam.Policy(this, 'AUTH-InitAuth-Policy-getToken', {
       statements: [initAuthPolicy],
     }));
@@ -120,7 +121,7 @@ export class TokenStack extends cdk.Stack {
       },
     };
 
-    //create UM api key
+    //create an api key for the token api's
     const tokenApiKey = process.env.TOKEN_API_KEY;
     if (tokenApiKey === undefined) {
       throw new Error(( 'TOKEN_API_KEY undefined'));
@@ -129,18 +130,18 @@ export class TokenStack extends cdk.Stack {
       apiKeyName: `${(process.env.APP_NAME)?.toUpperCase()}_TOKEN_API_KEY`,
       value: tokenApiKey,
     });
-    this.exportValue(apiKey.keyId, {
+    this.exportValue(apiKey.keyId, { // export if other stacks need to use it
       name: `${process.env.APP_NAME}TokenApiKey`,
     });
 
 
-    // add the throttle per method
+    // add the throttle per method and the api key to the gateway
     gatewayHelper.addUsagePlan('AUTH-UsagePlan', defaultPlan, undefined, { key: apiKey, overrideLogicalId: 'webappserverkey' });
 
     // Add default error handling for auth failure
     gatewayHelper.addDefaultAuthErrorResponse('AUTH-response');
 
-    // Add to custom domain
+    // Add to custom domain to the gateway
     new ApiGatewayCustomDomain(this, gatewayHelper.returnGateway(), process.env.DOMAIN!, domainNamePart);
 
   }

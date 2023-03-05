@@ -28,6 +28,10 @@ The Web interface is created in Angular
 - Node
 - Dot 
 - CDK 
+
+- AWS Route 53 Hosted Zone created
+- AWS SES Verified Domain
+
 - ##### TODO: ADD Quickstart when created
 
 

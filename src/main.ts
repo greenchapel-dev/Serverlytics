@@ -14,13 +14,13 @@ const stackEnvironments = {
 const app = new App();
 
 
-// USER MANAGEMENT STACKS
-// Cognito Stack
+// ---- USER MANAGEMENT STACKS
+// Cognito Stack creates the user pools and data tables
 const cognitoStack = new CognitoStack(app, `${process.env.APP_NAME_SHORT}-CognitoStack`, {
   env: stackEnvironments,
 });
 
-// Main User Management Stack
+// Main User Management Stack adds the user management features like create user, update user, etc.
 const umStack = new UserManagementCdkStack(app, `${process.env.APP_NAME_SHORT}-UserManagementStack`, {
   env: stackEnvironments,
   userPoolClientId: cognitoStack.userPoolClientId,
@@ -29,14 +29,17 @@ const umStack = new UserManagementCdkStack(app, `${process.env.APP_NAME_SHORT}-U
 });
 umStack.addDependency(cognitoStack);
 
+// Token Stack adds the token management features like create token, update token, etc.
 const tokenStack = new TokenStack(app, `${process.env.APP_NAME_SHORT}-TokenCdkStack`, {
   env: stackEnvironments,
   userPoolClientId: cognitoStack.userPoolClientId,
   userPoolId: cognitoStack.userPoolId,
 });
 tokenStack.addDependency(cognitoStack);
+// ---- END USER MANAGEMENT STACKS
 
 
+// ---- EXAMPLE STACKS
 // Example stack using the UM
 const exampleStack = new ExampleFeaturesCdkStack(app, `${process.env.APP_NAME_SHORT}-ExampleFeaturesCdkStack`, {
   env: stackEnvironments,
@@ -45,5 +48,6 @@ const exampleStack = new ExampleFeaturesCdkStack(app, `${process.env.APP_NAME_SH
   userDataTable: cognitoStack.userDataTable,
 });
 exampleStack.addDependency(cognitoStack);
+// ---- END EXAMPLE STACKS
 
 app.synth();

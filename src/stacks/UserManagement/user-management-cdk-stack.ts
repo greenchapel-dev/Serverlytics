@@ -23,13 +23,13 @@ export class UserManagementCdkStack extends cdk.Stack {
     super(scope, id, props);
 
 
-    const domainNamePart = 'um';
+    const domainNamePart = 'um'; // domain name part is a subdomain of the domain name eg. um.serverlytics.dev
 
     //get dynamo db table so we can delete the user entry
     const userDynamoTable = dynamodb.Table.fromTableArn(this, 'UM-ImportUserTable', props?.userDataTable.tableArn!);
 
 
-    const gatewayHelper = new ApiGatewayHelper(this, 'UM-Endpoint');
+    const gatewayHelper = new ApiGatewayHelper(this, 'UM-Endpoint'); // create the gateway helper
 
     // Sign Up
     const signUpFn = new lambdaNode.NodejsFunction(this, 'UM-SignUpHandler', {
@@ -130,7 +130,6 @@ export class UserManagementCdkStack extends cdk.Stack {
         burstLimit: 2,
       },
     });
-
     userDynamoTable.grantReadWriteData(deleteUserFn);
 
 
@@ -167,7 +166,6 @@ export class UserManagementCdkStack extends cdk.Stack {
         burstLimit: 2,
       },
     });
-
     userDynamoTable.grantReadData(getUserFn);
 
 
@@ -274,7 +272,7 @@ export class UserManagementCdkStack extends cdk.Stack {
 
 
     const cognitoPoolARN = `arn:aws:cognito-idp:${Stack.of(this).region}:${Stack.of(this).account}:userpool/${props?.userPoolId!}`;
-    // 👇 create a policy statement
+    // create the policy statements
     const signUpPolicy = new iam.PolicyStatement({
       actions: ['cognito-idp:SignUp'],
       resources: [cognitoPoolARN],
@@ -352,7 +350,7 @@ export class UserManagementCdkStack extends cdk.Stack {
     });
 
 
-    // add the throttle per method
+    // add the throttle per method and add the api key
     gatewayHelper.addUsagePlan('AUTH-UsagePlan', defaultPlan, undefined, { key: apiKey, overrideLogicalId: 'webappserverkey' });
 
     // Add default error handling for auth failure

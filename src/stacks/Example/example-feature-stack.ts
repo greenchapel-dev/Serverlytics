@@ -23,13 +23,9 @@ export class ExampleFeaturesCdkStack extends cdk.Stack {
     super(scope, id, props);
 
 
-    const domainNamePart = 'example';
+    const domainNamePart = 'example'; // domain name part is a subdomain of the domain name eg. example.serverlytics.dev
 
-    //get dynamo db table so we can delete the user entry
-    // const userDynamoTable = dynamodb.Table.fromTableArn(this, 'UM-ImportUserTable', props?.userDataTable.tableArn!);
-
-
-    const gatewayHelper = new ApiGatewayHelper(this, 'EX-Endpoint');
+    const gatewayHelper = new ApiGatewayHelper(this, 'EX-Endpoint'); // create the gateway helper
 
     // Feature A
     const featureAfn = new lambdaNode.NodejsFunction(this, 'EX-FeatureA', {
@@ -100,7 +96,7 @@ export class ExampleFeaturesCdkStack extends cdk.Stack {
 
 
     const cognitoPoolARN = `arn:aws:cognito-idp:${Stack.of(this).region}:${Stack.of(this).account}:userpool/${props?.userPoolId!}`;
-    // 👇 create a policy statement
+    // create a policy statement
 
     const getUserPolicy = new iam.PolicyStatement({
       actions: ['cognito-idp:GetUser'],
@@ -126,7 +122,8 @@ export class ExampleFeaturesCdkStack extends cdk.Stack {
     };
 
 
-    //create Basic APP key
+    // create Basic APP key
+    // TODO: check app key doesn't already exist
     const basicApiKey = process.env.BASIC_APP_KEY;
     if (basicApiKey === undefined) {
       throw new Error(( 'BASIC_APP_KEY undefined'));

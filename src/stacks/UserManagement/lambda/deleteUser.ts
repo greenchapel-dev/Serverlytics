@@ -9,16 +9,17 @@ import {
 
 export async function main( event: any, _context: Context, callback: Callback ) {
 
-  console.log(event);
+  // console.log(event);
   // Set the region
   AWS.config.update({ region: process.env.region });
   var docClient = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
 
 
+  // create the params for Delete User
   var paramsPW: DeleteUserRequest | GetUserRequest = {
     AccessToken: event.headers.Authorization,
   };
-  console.log('paramsPW', JSON.stringify(paramsPW));
+
   var cognitoidentityserviceprovider = new CognitoIdentityServiceProvider();
 
   try {
@@ -26,6 +27,7 @@ export async function main( event: any, _context: Context, callback: Callback ) 
     // get User First
     const getUser = await cognitoidentityserviceprovider.getUser(paramsPW).promise();
 
+    // Delete User from DynamoDB table
     const deleteItemParams = {
       TableName: process.env.userDataTableName!,
       Key: {
@@ -34,8 +36,9 @@ export async function main( event: any, _context: Context, callback: Callback ) 
     };
     await docClient.delete(deleteItemParams).promise();
 
+    // Delete User from Cognito
     const deleteUser = await cognitoidentityserviceprovider.deleteUser(paramsPW).promise();
-    console.log('deleteUser', deleteUser);
+    // console.log('deleteUser', deleteUser);
     return {
       statusCode: 204,
       headers: {
@@ -44,6 +47,7 @@ export async function main( event: any, _context: Context, callback: Callback ) 
       },
     };
   } catch (err) {
+    // If there is an error, return the error
     const error: any = err;
     console.log('error', error);
     return {

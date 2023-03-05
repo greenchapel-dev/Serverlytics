@@ -27,7 +27,7 @@ export class CognitoStack extends cdk.Stack {
       tableName: `${process.env.APP_NAME}-User-Data-Table`,
       partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
     });
 
     // Create postConfirmation Lambda
@@ -90,17 +90,17 @@ export class CognitoStack extends cdk.Stack {
       },
     });
 
-    // 👇 User Pool
+    // User Pool
     const userPool = new cognito.UserPool(this, 'cognito-user-pool', {
       userPoolName: `${process.env.APP_NAME}user-management-user-pool`,
-      selfSignUpEnabled: true,
+      selfSignUpEnabled: true, // allow users to sign up themselves
       signInAliases: {
         email: true,
       },
       autoVerify: {
         email: true,
       },
-      standardAttributes: {
+      standardAttributes: { // standard attributes that are required by cognito
         givenName: {
           required: true,
           mutable: true,
@@ -110,24 +110,24 @@ export class CognitoStack extends cdk.Stack {
           mutable: true,
         },
       },
-      customAttributes: {
+      customAttributes: { // custom attributes that are required by the app
         userActions: new cognito.StringAttribute({ mutable: true }),
       },
-      passwordPolicy: {
+      passwordPolicy: { // password policy
         minLength: 8,
         requireLowercase: true,
         requireDigits: true,
         requireUppercase: true,
         requireSymbols: true,
       },
-      lambdaTriggers: {
-        preTokenGeneration: preTokenFn,
-        postConfirmation: postConfirmationFn,
-        customMessage: customMessageFn,
+      lambdaTriggers: { // lambda triggers for cognito
+        preTokenGeneration: preTokenFn, // runs before a token is generated
+        postConfirmation: postConfirmationFn, // runs after a user is confirmed
+        customMessage: customMessageFn, // runs when any email is sent
       },
       accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
-      removalPolicy: cdk.RemovalPolicy.RETAIN,
-      email: cognito.UserPoolEmail.withSES({
+      removalPolicy: cdk.RemovalPolicy.RETAIN, // retain the user pool on deletion
+      email: cognito.UserPoolEmail.withSES({ // use custom email sender with SES verified Domain (this needs setting up prior to building)
         sesRegion: Stack.of(this).region,
         fromEmail: process.env.COGNITO_FROM_EMAIL!,
         fromName: process.env.COGNITO_FROM_NAME!,
@@ -139,16 +139,6 @@ export class CognitoStack extends cdk.Stack {
     const userPoolCfn = userPool.node.defaultChild as CfnUserPool;
     userPoolCfn.userPoolAddOns = { advancedSecurityMode: 'ENFORCED' };
 
-
-    // optionally update Email sender
-    // const cfnUserPool = userPool.node.defaultChild as cognito.CfnUserPool;
-    // cfnUserPool.emailConfiguration = {
-    //   emailSendingAccount: 'DEVELOPER',
-    //   replyToEmailAddress: 'YOUR_EMAIL@example.com',
-    //   sourceArn: `arn:aws:ses:cognito-ses-region:${
-    //     cdk.Stack.of(this).account
-    //   }:identity/YOUR_EMAIL@example.com`,
-    // };
 
     // User Pool Client attributes
     const standardCognitoAttributes = {
@@ -174,10 +164,12 @@ export class CognitoStack extends cdk.Stack {
       website: false,
     };
 
+    // update the attributes that are needed by the client that can be read
     const clientReadAttributes = new cognito.ClientAttributes()
       .withStandardAttributes(standardCognitoAttributes)
       .withCustomAttributes(...['userActions']);
 
+    // update the attributes that are needed by the client that can be written
     const clientWriteAttributes = new cognito.ClientAttributes()
       .withStandardAttributes({
         ...standardCognitoAttributes,
@@ -193,7 +185,8 @@ export class CognitoStack extends cdk.Stack {
         userPassword: true,
       },
       supportedIdentityProviders: [
-        cognito.UserPoolClientIdentityProvider.COGNITO,
+        cognito.UserPoolClientIdentityProvider.COGNITO, // currently only supporting cognito IDP
+        // TODO: add support for other IDPs
       ],
       preventUserExistenceErrors: true,
       readAttributes: clientReadAttributes,
@@ -204,7 +197,7 @@ export class CognitoStack extends cdk.Stack {
     // Identity Pool
     const identityPool = new cognito.CfnIdentityPool(this, 'cognito-identity-pool', {
       identityPoolName: `${process.env.APP_NAME}-user-management-identity-pool`,
-      allowUnauthenticatedIdentities: false,
+      allowUnauthenticatedIdentities: false, // only allow authenticated users
       cognitoIdentityProviders: [
         {
           clientId: userPoolClient.userPoolClientId,
@@ -213,7 +206,7 @@ export class CognitoStack extends cdk.Stack {
       ],
     });
 
-
+    // Create a role for authenticated users
     const isUserCognitoGroupRole = new iam.Role(this, 'cognito-users-group-role', {
       description: 'Default role for authenticated user-management users',
       assumedBy: new iam.FederatedPrincipal(
@@ -230,8 +223,9 @@ export class CognitoStack extends cdk.Stack {
       ),
     });
 
+    // Create Policy for authenticated users
     const authenticatedRolePolicy = new RoleHelper(this, 'authenticatedRolePolicy', isUserCognitoGroupRole.roleArn);
-    authenticatedRolePolicy.addBasicLambda();
+    authenticatedRolePolicy.addBasicLambda(); // Add basic lambda permissions
 
     new cognito.CfnIdentityPoolRoleAttachment(
       this,
@@ -256,7 +250,7 @@ export class CognitoStack extends cdk.Stack {
       },
     );
 
-
+    // Set global variables for other stacks to use
     this.userPoolId = userPool.userPoolId;
     this.userPoolClientId = userPoolClient.userPoolClientId;
     this.userDataTable = userDataTable;

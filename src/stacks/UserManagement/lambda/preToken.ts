@@ -8,6 +8,8 @@ export async function main( event: any, _context: Context, callback: Callback ) 
   // # "claimsToAddOrOverride" is the important part
   event.response.claimsOverrideDetails = {
     claimsToAddOrOverride: {
+      // Can add custom claims here
+
     },
   };
 
