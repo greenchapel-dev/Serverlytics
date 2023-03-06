@@ -36,8 +36,6 @@ diagram.dot
 /test-reports/
 junit.xml
 /coverage/
-!/.github/workflows/build.yml
-!/.mergify.yml
 !/.github/workflows/upgrade.yml
 !/.github/pull_request_template.md
 !/test/
@@ -52,3 +50,4 @@ junit.xml
 /cdk.out/
 .cdk.staging/
 .parcel-cache/
+!/.github/workflows/build.yml
