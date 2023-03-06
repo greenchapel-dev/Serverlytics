@@ -57,6 +57,10 @@ prWorkflow.addJobs({
     permissions: { contents: 'write', contents: 'write' },
     steps: [
       {
+        name: 'Install graphviz',
+        uses: 'ts-graphviz/setup-graphviz@v1',
+      },
+      {
         name: 'Checkout',
         uses: 'actions/checkout@v2',
         with: {
