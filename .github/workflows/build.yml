@@ -22,6 +22,9 @@ jobs:
       COGNITO_FROM_NAME: ${{ secrets.COGNITO_FROM_NAME }}
       COGNITO_EMAIL_REPLY_TO: ${{ secrets.COGNITO_EMAIL_REPLY_TO }}
       DELETE_USERS_ON_STACK_DESTROY: ${{ secrets.DELETE_USERS_ON_STACK_DESTROY }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
